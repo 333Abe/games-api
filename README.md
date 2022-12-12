@@ -1,4 +1,5 @@
 This project requires you to create two .env files for saving the names of the databases
+you need to specify the database names for the project to work
 
 one each of:
 
