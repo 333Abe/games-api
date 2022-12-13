@@ -59,10 +59,6 @@ describe("GET api/reviews", () => {
       .expect(200)
       .then(({ body: { reviews } }) => {
         expect(reviews).toHaveLength(13);
-        expect(reviews).toBeSortedBy("created_at", {
-          descending: true,
-          coerce: true,
-        });
         reviews.forEach((review) => {
           expect.objectContaining({
             review_id: expect.any(Number),
@@ -73,9 +69,47 @@ describe("GET api/reviews", () => {
             comment_count: expect.any(Number),
             review_img_url: expect.any(Number),
             votes: expect.any(Number),
-            created_at: expect.any(Date),
           });
         });
+      });
+  });
+});
+
+describe("GET api/reviews/:review_id", () => {
+  test("200: should return an object with the key of review and a review object as a value", () => {
+    return request(app)
+      .get("/api/reviews/3")
+      .expect(200)
+      .then(({ body: review }) => {
+        [review].forEach((review) => {
+          expect.objectContaining({
+            review_id: expect.any(Number),
+            title: expect.any(String),
+            category: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_body: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(Date),
+            votes: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("400: Bad request when supplied id is invalid", () => {
+    return request(app)
+      .get("/api/reviews/invalid_id")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("404: Not found when supplied id is valid but does not exist", () => {
+    return request(app)
+      .get("/api/reviews/1000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
       });
   });
 });
