@@ -6,6 +6,7 @@ const {
 
 const reviewsRouter = express.Router();
 
+reviewsRouter.get("/", getReviews);
 reviewsRouter.get("/:review_id", getReviewsById);
 
 module.exports = reviewsRouter;

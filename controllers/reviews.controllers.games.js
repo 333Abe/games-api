@@ -3,6 +3,12 @@ const {
   selectReviewsById,
 } = require("../models/reviews.models.games");
 
+exports.getReviews = (req, res) => {
+  selectReviews().then((reviews) => {
+    res.status(200).send(reviews);
+  });
+};
+
 exports.getReviewsById = (req, res, next) => {
   selectReviewsById(req.params.review_id)
     .then((review) => {
