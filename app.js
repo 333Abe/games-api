@@ -1,5 +1,5 @@
 const express = require("express");
-const { handle404Paths } = require("./controllers/controllers.errors");
+const { handle404Paths } = require("./controllers/errors.controllers.games");
 const apiRouter = require("./routers/api.routers.games.js");
 
 const app = express();
