@@ -59,6 +59,10 @@ describe("GET api/reviews", () => {
       .expect(200)
       .then(({ body: { reviews } }) => {
         expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy("created_at", {
+          descending: true,
+          coerce: true,
+        });
         reviews.forEach((review) => {
           expect.objectContaining({
             review_id: expect.any(Number),
@@ -69,6 +73,7 @@ describe("GET api/reviews", () => {
             comment_count: expect.any(Number),
             review_img_url: expect.any(Number),
             votes: expect.any(Number),
+            created_at: expect.any(Date),
           });
         });
       });
