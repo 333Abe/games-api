@@ -1,5 +1,5 @@
 const express = require("express");
-const { getCategories } = require("../controllers/controllers.games.js");
+const { getCategories } = require("../controllers/categories.controllers.games");
 
 const categoriesRouter = express.Router();
 
