@@ -66,7 +66,7 @@ describe("GET api/reviews", () => {
             category: expect.any(String),
             designer: expect.any(String),
             owner: expect.any(String),
-            review_body: expect.any(String),
+            comment_count: expect.any(Number),
             review_img_url: expect.any(Number),
             votes: expect.any(Number),
           });
