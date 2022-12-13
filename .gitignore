@@ -1,3 +1,6 @@
 node_modules
 .env.*
 ignore.README.md
+scrap.sql
+scrap.txt
+scrap.js
