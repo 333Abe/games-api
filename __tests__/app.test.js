@@ -52,7 +52,7 @@ describe("GET api/categories", () => {
   });
 });
 
-describe.only("GET api/reviews", () => {
+describe("GET api/reviews", () => {
   test("should return an object with the key of reviews and an array of review objects as a value", () => {
     return request(app)
       .get("/api/reviews")
