@@ -77,24 +77,23 @@ describe("GET api/reviews", () => {
   });
 });
 
-describe("GET api/reviews/:review_id", () => {
+describe.only("GET api/reviews/:review_id", () => {
   test("200: should return an object with the key of review and a review object as a value", () => {
     return request(app)
       .get("/api/reviews/3")
       .expect(200)
       .then(({ body: review }) => {
-        [review].forEach((review) => {
-          expect.objectContaining({
-            review_id: expect.any(Number),
-            title: expect.any(String),
-            category: expect.any(String),
-            designer: expect.any(String),
-            owner: expect.any(String),
-            review_body: expect.any(String),
-            review_img_url: expect.any(String),
-            created_at: expect.any(Date),
-            votes: expect.any(Number),
-          });
+        expect(review.review).toMatchObject({
+          review_id: 3,
+          title: "Ultimate Werewolf",
+          category: "social deduction",
+          designer: "Akihisa Okui",
+          owner: "bainesface",
+          review_body: "We couldn't find the werewolf!",
+          review_img_url:
+            "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          created_at: "2021-01-18T10:01:41.251Z",
+          votes: 5,
         });
       });
   });
