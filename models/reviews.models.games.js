@@ -22,3 +22,10 @@ exports.selectReviewsById = (review_id) => {
       return { review: review[0] };
     });
 };
+
+exports.selectCommentsByReviewId = (review_id)=>{
+  return db.query(`SELECT * FROM comments WHERE review_id = $1;`, [review_id]).then((rows)=>{
+    console.log(Object.keys(rows), "<<<<<<<<<<<<<<<<<<<<<< rows obj")
+    return {rows: comments}
+  })
+}

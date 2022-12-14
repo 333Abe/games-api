@@ -1,6 +1,7 @@
 const {
   selectReviews,
   selectReviewsById,
+  selectCommentsByReviewId,
 } = require("../models/reviews.models.games");
 
 exports.getReviews = (req, res) => {
@@ -17,4 +18,14 @@ exports.getReviewsById = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.getCommentsByReviewId = (req, res, next) => {
+  selectCommentsByReviewId(req.params.review_id)
+    .then((comments) => {
+      res.status(200).send(comments);
+    })
+    .catch(err);
+  console.log(err, "caught in controller");
+  next(err);
 };

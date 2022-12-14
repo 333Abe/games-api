@@ -113,3 +113,23 @@ describe("GET api/reviews/:review_id", () => {
       });
   });
 });
+
+describe("GET /api/reviews/:review_id/comments", () => {
+  test("should respond with an array of comments with supplised review_id", () => {
+    return response(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toHaveLength(3);
+        comments.forEach((comment) => {
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            author: expect.any(String),
+            review_id: expect.any(Number),
+            created_at: expect.any(Date),
+          });
+        });
+      });
+  });
+});
