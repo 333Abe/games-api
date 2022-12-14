@@ -1,15 +1,17 @@
 const db = require("../db/connection.js");
 
-
 exports.selectReviews = () => {
-  return db.query(`SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, COUNT(comments.review_id) AS comment_count
+  return db
+    .query(
+      `SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, COUNT(comments.review_id) AS comment_count
   FROM reviews 
   LEFT JOIN comments ON comments.review_id = reviews.review_id
   GROUP BY reviews.review_id
-  ORDER BY reviews.created_at DESC;`)
-  .then(({ rows: reviews }) => {
-    return { reviews };
-  });
+  ORDER BY reviews.created_at DESC;`
+    )
+    .then(({ rows: reviews }) => {
+      return { reviews };
+    });
 };
 
 exports.selectReviewsById = (review_id) => {
@@ -23,9 +25,13 @@ exports.selectReviewsById = (review_id) => {
     });
 };
 
-exports.selectCommentsByReviewId = (review_id)=>{
-  return db.query(`SELECT * FROM comments WHERE review_id = $1;`, [review_id]).then((rows)=>{
-    console.log(Object.keys(rows), "<<<<<<<<<<<<<<<<<<<<<< rows obj")
-    return {rows: comments}
-  })
-}
+exports.selectCommentsByReviewId = (review_id) => {
+  return db
+    .query(
+      `SELECT * FROM comments WHERE review_id = $1 ORDER BY created_at DESC;`,
+      [review_id]
+    )
+    .then(({ rows: comments }) => {
+      return { comments };
+    });
+};

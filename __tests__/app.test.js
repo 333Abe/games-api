@@ -114,13 +114,14 @@ describe("GET api/reviews/:review_id", () => {
   });
 });
 
-describe("GET /api/reviews/:review_id/comments", () => {
+describe.only("GET /api/reviews/:review_id/comments", () => {
   test("should respond with an array of comments with supplised review_id", () => {
-    return response(app)
+    return request(app)
       .get("/api/reviews/2/comments")
       .expect(200)
       .then(({ body: { comments } }) => {
         expect(comments).toHaveLength(3);
+        expect(comments).toBeSortedBy("created_at", { descending: true });
         comments.forEach((comment) => {
           expect.objectContaining({
             comment_id: expect.any(Number),
@@ -130,6 +131,22 @@ describe("GET /api/reviews/:review_id/comments", () => {
             created_at: expect.any(Date),
           });
         });
+      });
+  });
+  test("400: Bad request when supplied id is invalid", () => {
+    return request(app)
+      .get("/api/reviews/invalid_id/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test.only("404: Not found when supplied id is valid but does not exist", () => {
+    return request(app)
+      .get("/api/reviews/1000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
       });
   });
 });

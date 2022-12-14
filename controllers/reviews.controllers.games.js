@@ -25,7 +25,7 @@ exports.getCommentsByReviewId = (req, res, next) => {
     .then((comments) => {
       res.status(200).send(comments);
     })
-    .catch(err);
-  console.log(err, "caught in controller");
-  next(err);
+    .catch((err) => {
+      next(err);
+    });
 };
