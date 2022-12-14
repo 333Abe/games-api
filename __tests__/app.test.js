@@ -114,7 +114,7 @@ describe("GET api/reviews/:review_id", () => {
   });
 });
 
-describe.only("GET /api/reviews/:review_id/comments", () => {
+describe("GET /api/reviews/:review_id/comments", () => {
   test("should respond with an array of comments with supplised review_id", () => {
     return request(app)
       .get("/api/reviews/2/comments")
@@ -141,7 +141,7 @@ describe.only("GET /api/reviews/:review_id/comments", () => {
         expect(body.msg).toBe("Bad request");
       });
   });
-  test.only("404: Not found when supplied id is valid but does not exist", () => {
+  test("404: Not found when supplied id is valid but does not exist", () => {
     return request(app)
       .get("/api/reviews/1000")
       .expect(404)
