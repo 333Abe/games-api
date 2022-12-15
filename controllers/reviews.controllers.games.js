@@ -3,6 +3,7 @@ const {
   selectReviewsById,
   selectCommentsByReviewId,
   checkIfReviewExists,
+  insertCommentByReviewId,
 } = require("../models/reviews.models.games");
 
 exports.getReviews = (req, res) => {
@@ -34,4 +35,15 @@ exports.getCommentsByReviewId = (req, res, next) => {
     });
 };
 
-exports.postCommentsByReviewId = (req, res, next) => {};
+exports.postCommentsByReviewId = (req, res, next) => {
+  const author = req.body.author;
+  const body = req.body.body;
+  const review_id = req.params.review_id;
+  insertCommentByReviewId(review_id, author, body)
+    .then((comment) => {
+      res.status(201).send(comment);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};

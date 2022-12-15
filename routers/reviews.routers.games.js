@@ -3,6 +3,7 @@ const {
   getReviews,
   getReviewsById,
   getCommentsByReviewId,
+  postCommentsByReviewId,
 } = require("../controllers/reviews.controllers.games");
 
 const reviewsRouter = express.Router();

@@ -1,4 +1,5 @@
 const db = require("../db/connection.js");
+const format = require("pg-format");
 
 exports.selectReviews = () => {
   return db
@@ -44,5 +45,16 @@ exports.checkIfReviewExists = (review_id) => {
         return Promise.reject({ status: 404, msg: "Not found" });
       }
       return true;
+    });
+};
+
+exports.insertCommentByReviewId = (review_id, author, body) => {
+  return db
+    .query(
+      `INSERT INTO comments (body, author, review_id) VALUES ($1, $2, $3) RETURNING *;`,
+      [body, author, review_id]
+    )
+    .then(({ rows: comment }) => {
+      return { comment: comment[0] };
     });
 };
