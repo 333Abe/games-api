@@ -160,3 +160,99 @@ describe("GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/reviews/:review_id/comments", () => {
+  test("201: should respond with the posted comment as an object", () => {
+    const newComment = {
+      author: "mallionaire",
+      body: "some body text",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body: comment }) => {
+        expect(comment).toMatchObject({
+          comment: {
+            comment_id: 7,
+            body: "some body text",
+            review_id: 1,
+            author: "mallionaire",
+            votes: 0,
+          },
+        });
+      });
+  });
+  test.only("201: should respond with the posted comment as an object and ignore additional key-values in the object", () => {
+    const newComment = {
+      author: "mallionaire",
+      body: "some body text",
+      not_needed: "not wanted",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body: comment }) => {
+        expect(comment).toMatchObject({
+          comment: {
+            comment_id: 7,
+            body: "some body text",
+            review_id: 1,
+            author: "mallionaire",
+            votes: 0,
+          },
+        });
+      });
+  });
+  test("400: Bad request when a required key is missing", () => {
+    const newComment = {
+      body: "some body text",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("400: Bad request when review_id is invalid", () => {
+    const newComment = {
+      author: "mallionaire",
+    };
+    return request(app)
+      .post("/api/reviews/invalid_id/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("404 Not found when given a valid review_id but no review exists", () => {
+    const newComment = {
+      author: "mallionaire",
+      body: "some body text",
+    };
+    return request(app)
+      .post("/api/reviews/1000/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  test("404 Not found when username of author doesnt exist", () => {
+    const newComment = {
+      author: "Adrian",
+      body: "some body text",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+});

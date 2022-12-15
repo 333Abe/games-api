@@ -46,3 +46,14 @@ exports.checkIfReviewExists = (review_id) => {
       return true;
     });
 };
+
+exports.insertCommentByReviewId = (review_id, author, body) => {
+  return db
+    .query(
+      `INSERT INTO comments (body, author, review_id) VALUES ($1, $2, $3) RETURNING *;`,
+      [body, author, review_id]
+    )
+    .then(({ rows: comment }) => {
+      return { comment: comment[0] };
+    });
+};
