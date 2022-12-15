@@ -182,7 +182,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         });
       });
   });
-  test.only("201: should respond with the posted comment as an object", () => {
+  test.only("201: should respond with the posted comment as an object and ignore additional key-values in the object", () => {
     const newComment = {
       author: "mallionaire",
       body: "some body text",
