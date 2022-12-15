@@ -182,6 +182,28 @@ describe("POST /api/reviews/:review_id/comments", () => {
         });
       });
   });
+  test.only("201: should respond with the posted comment as an object", () => {
+    const newComment = {
+      author: "mallionaire",
+      body: "some body text",
+      not_needed: "not wanted",
+    };
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body: comment }) => {
+        expect(comment).toMatchObject({
+          comment: {
+            comment_id: 7,
+            body: "some body text",
+            review_id: 1,
+            author: "mallionaire",
+            votes: 0,
+          },
+        });
+      });
+  });
   test("400: Bad request when a required key is missing", () => {
     const newComment = {
       body: "some body text",
@@ -197,7 +219,6 @@ describe("POST /api/reviews/:review_id/comments", () => {
   test("400: Bad request when review_id is invalid", () => {
     const newComment = {
       author: "mallionaire",
-      body: "some body text",
     };
     return request(app)
       .post("/api/reviews/invalid_id/comments")
