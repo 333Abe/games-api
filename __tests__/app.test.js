@@ -256,3 +256,17 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe.only("PATCH /api/reviews/:review_id", () => {
+  test("201 created adds the correct number of votes to the review", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(newVote)
+      .expect(201)
+      .then(({ body }) => {
+        console.log(body);
+        expect(true.toBe(true));
+      });
+  });
+});

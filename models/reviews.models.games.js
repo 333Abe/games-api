@@ -57,3 +57,27 @@ exports.insertCommentByReviewId = (review_id, author, body) => {
       return { comment: comment[0] };
     });
 };
+
+exports.updateReviewById = (review_id, inc_votes) => {
+  return db
+    .query(`UPDATE reviews SET votes = $1 WHERE review_id = $2 RETURNING *;`, [
+      inc_votes,
+      review_id,
+    ])
+    .then(({ rows: review }) => {
+      return { review: review[0] };
+    });
+};
+
+exports.getVotesByReviewId = (review_id) => {
+  console.log(review_id, "in getVotesByReviewId");
+  return db
+    .query(`SELECT votes FROM reviews WHERE review_id = $1`, [review_id])
+    .then(({ body: votes }) => {
+      console.log(
+        { votes: votes[0] },
+        "<<<<<<<<<<<<<<<<<<<<<<<< { votes: votes[0] }, model"
+      );
+      return { votes: votes[0] };
+    });
+};
