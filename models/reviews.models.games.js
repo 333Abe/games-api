@@ -70,14 +70,9 @@ exports.updateReviewById = (review_id, inc_votes) => {
 };
 
 exports.getVotesByReviewId = (review_id) => {
-  console.log(review_id, "in getVotesByReviewId");
   return db
-    .query(`SELECT votes FROM reviews WHERE review_id = $1`, [review_id])
-    .then(({ body: votes }) => {
-      console.log(
-        { votes: votes[0] },
-        "<<<<<<<<<<<<<<<<<<<<<<<< { votes: votes[0] }, model"
-      );
-      return { votes: votes[0] };
+    .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
+    .then(({ rows }) => {
+      return Number(rows[0].votes);
     });
 };

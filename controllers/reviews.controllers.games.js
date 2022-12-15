@@ -53,18 +53,16 @@ exports.postCommentsByReviewId = (req, res, next) => {
 exports.patchReviewById = (req, res, next) => {
   const review_id = req.params.review_id;
   let inc_votes = req.body.inc_votes;
-  console.log(inc_votes, "<<<<<<<<<<<<<<<<<<< inc_votes, controller");
-  getVotesByReviewId(review_id)
+  checkIfReviewExists(review_id)
+    .then(() => {
+      return getVotesByReviewId(review_id);
+    })
     .then((votes) => {
       inc_votes += votes;
-      console.log(
-        inc_votes,
-        "<<<<<<<<<<<<<<<<<<< inc_votes + votes, controller"
-      );
       return updateReviewById(review_id, inc_votes);
     })
     .then((review) => {
-      res.status(201).send({ review });
+      res.status(201).send(review);
     })
     .catch((err) => {
       next(err);

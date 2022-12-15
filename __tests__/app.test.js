@@ -77,7 +77,7 @@ describe("GET api/reviews", () => {
   });
 });
 
-describe.only("GET api/reviews/:review_id", () => {
+describe("GET api/reviews/:review_id", () => {
   test("200: should return an object with the key of review and a review object as a value", () => {
     return request(app)
       .get("/api/reviews/3")
@@ -183,7 +183,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         });
       });
   });
-  test.only("201: should respond with the posted comment as an object and ignore additional key-values in the object", () => {
+  test("201: should respond with the posted comment as an object and ignore additional key-values in the object", () => {
     const newComment = {
       author: "mallionaire",
       body: "some body text",
@@ -220,6 +220,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
   test("400: Bad request when review_id is invalid", () => {
     const newComment = {
       author: "mallionaire",
+      body: "some body text",
     };
     return request(app)
       .post("/api/reviews/invalid_id/comments")
@@ -257,16 +258,45 @@ describe("POST /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe.only("PATCH /api/reviews/:review_id", () => {
+describe("PATCH /api/reviews/:review_id", () => {
   test("201 created adds the correct number of votes to the review", () => {
     const newVote = { inc_votes: 1 };
     return request(app)
       .patch("/api/reviews/2")
       .send(newVote)
       .expect(201)
+      .then(({ body: { review } }) => {
+        expect(review.votes).toBe(6);
+      });
+  });
+  test("400: Bad request when required key is missing", () => {
+    const newVote = {};
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(newVote)
+      .expect(400)
       .then(({ body }) => {
-        console.log(body);
-        expect(true.toBe(true));
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("404: Not found when supplied id is valid but does not exist", () => {
+    const newVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/reviews/1000")
+      .send(newVote)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  test("400 Bad request when supplied vote is invalid", () => {
+    const newVote = { inc_votes: "invalid" };
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(newVote)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
       });
   });
 });
