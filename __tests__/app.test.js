@@ -234,8 +234,3 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
-
-// 400 missing key
-// 400 supplied review_id is invalid
-// 404 supplied review_id valid but no review for that id exists
-// 404 username doesn't exist
