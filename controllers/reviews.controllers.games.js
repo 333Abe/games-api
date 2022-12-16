@@ -4,6 +4,8 @@ const {
   selectCommentsByReviewId,
   checkIfReviewExists,
   insertCommentByReviewId,
+  updateReviewById,
+  getVotesByReviewId,
 } = require("../models/reviews.models.games");
 
 exports.getReviews = (req, res) => {
@@ -42,6 +44,25 @@ exports.postCommentsByReviewId = (req, res, next) => {
   insertCommentByReviewId(review_id, author, body)
     .then((comment) => {
       res.status(201).send(comment);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.patchReviewById = (req, res, next) => {
+  const review_id = req.params.review_id;
+  let inc_votes = req.body.inc_votes;
+  checkIfReviewExists(review_id)
+    .then(() => {
+      return getVotesByReviewId(review_id);
+    })
+    .then((votes) => {
+      inc_votes += votes;
+      return updateReviewById(review_id, inc_votes);
+    })
+    .then((review) => {
+      res.status(200).send(review);
     })
     .catch((err) => {
       next(err);
