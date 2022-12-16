@@ -9,7 +9,8 @@ const {
 } = require("../models/reviews.models.games");
 
 exports.getReviews = (req, res) => {
-  selectReviews().then((reviews) => {
+  let { category, sort_by, order } = req.query;
+  selectReviews(category, sort_by, order).then((reviews) => {
     res.status(200).send(reviews);
   });
 };

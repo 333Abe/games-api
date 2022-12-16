@@ -75,6 +75,22 @@ describe("GET api/reviews", () => {
         });
       });
   });
+  test.only("200: accepts category query and returns only reviews with a matching category", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(1);
+      });
+  });
+  test("200: accepts category query and returns only reviews with a matching category", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=category&order=asc")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(1);
+      });
+  });
 });
 
 describe("GET api/reviews/:review_id", () => {
