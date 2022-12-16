@@ -1,7 +1,7 @@
 const db = require("../db/connection.js");
 const format = require("pg-format");
 
-exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
+exports.selectReviews = (category, sort_by, order) => {
   let sql = `SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, COUNT(comments.review_id) 
   AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id`;
 

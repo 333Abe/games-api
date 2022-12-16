@@ -101,6 +101,38 @@ describe("GET api/reviews", () => {
         expect(reviews).toBeSortedBy("title", { descending: true });
       });
   });
+  test("200: valid category but no reviews returns an empty array", () => {
+    return request(app)
+      .get("/api/reviews?category=children's games")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(0);
+      });
+  });
+  test("400 invalid sort_by query", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=invalid")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("400 invalid order query", () => {
+    return request(app)
+      .get("/api/reviews?order=invalid")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("404 non-existent category", () => {
+    return request(app)
+      .get("/api/reviews?category=invalid")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
 });
 
 describe("GET api/reviews/:review_id", () => {
