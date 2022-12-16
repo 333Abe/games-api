@@ -62,7 +62,7 @@ exports.patchReviewById = (req, res, next) => {
       return updateReviewById(review_id, inc_votes);
     })
     .then((review) => {
-      res.status(201).send(review);
+      res.status(200).send(review);
     })
     .catch((err) => {
       next(err);

@@ -258,13 +258,13 @@ describe("POST /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe("PATCH /api/reviews/:review_id", () => {
-  test("201 created adds the correct number of votes to the review", () => {
+describe.only("PATCH /api/reviews/:review_id", () => {
+  test("200 created adds the correct number of votes to the review", () => {
     const newVote = { inc_votes: 1 };
     return request(app)
       .patch("/api/reviews/2")
       .send(newVote)
-      .expect(201)
+      .expect(200)
       .then(({ body: { review } }) => {
         expect(review.votes).toBe(6);
       });
