@@ -300,3 +300,21 @@ describe.only("PATCH /api/reviews/:review_id", () => {
       });
   });
 });
+
+describe.only("GET /api/users", () => {
+  test("200 should receive an object with the key of users and an array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: users }) => {
+        expect(users.users).toHaveLength(4);
+        users.users.forEach((user) => {
+          expect.objectContaining({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+});
