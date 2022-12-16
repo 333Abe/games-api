@@ -1,3 +1,4 @@
+process.env.NODE_ENV = "test";
 const app = require("../app.js");
 const request = require("supertest");
 const db = require("../db/connection.js");
@@ -61,17 +62,19 @@ describe("GET api/reviews", () => {
         expect(reviews).toHaveLength(13);
         expect(reviews).toBeSortedBy("created_at", { descending: true });
         reviews.forEach((review) => {
-          expect.objectContaining({
-            review_id: expect.any(Number),
-            title: expect.any(String),
-            category: expect.any(String),
-            designer: expect.any(String),
-            owner: expect.any(String),
-            comment_count: expect.any(Number),
-            review_img_url: expect.any(Number),
-            votes: expect.any(Number),
-            created_at: expect.any(Date),
-          });
+          expect(review).toEqual(
+            expect.objectContaining({
+              review_id: expect.any(Number),
+              title: expect.any(String),
+              category: expect.any(String),
+              designer: expect.any(String),
+              owner: expect.any(String),
+              comment_count: expect.any(String),
+              review_img_url: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            })
+          );
         });
       });
   });
@@ -124,14 +127,16 @@ describe("GET /api/reviews/:review_id/comments", () => {
         expect(comments).toHaveLength(3);
         expect(comments).toBeSortedBy("created_at", { descending: true });
         comments.forEach((comment) => {
-          expect.objectContaining({
-            comment_id: expect.any(Number),
-            body: expect.any(String),
-            author: expect.any(String),
-            review_id: expect.any(Number),
-            created_at: expect.any(Date),
-            votes: expect.any(Number),
-          });
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              author: expect.any(String),
+              review_id: expect.any(Number),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
         });
       });
   });
@@ -258,7 +263,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe.only("PATCH /api/reviews/:review_id", () => {
+describe("PATCH /api/reviews/:review_id", () => {
   test("200 created adds the correct number of votes to the review", () => {
     const newVote = { inc_votes: 1 };
     return request(app)
@@ -301,7 +306,7 @@ describe.only("PATCH /api/reviews/:review_id", () => {
   });
 });
 
-describe.only("GET /api/users", () => {
+describe("GET /api/users", () => {
   test("200 should receive an object with the key of users and an array of user objects", () => {
     return request(app)
       .get("/api/users")
