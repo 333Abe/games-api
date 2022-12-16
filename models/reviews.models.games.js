@@ -1,17 +1,30 @@
 const db = require("../db/connection.js");
+const format = require("pg-format");
 
-exports.selectReviews = () => {
-  return db
-    .query(
-      `SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.designer, reviews.review_img_url, reviews.created_at, reviews.votes, COUNT(comments.review_id) AS comment_count
-  FROM reviews 
-  LEFT JOIN comments ON comments.review_id = reviews.review_id
-  GROUP BY reviews.review_id
-  ORDER BY reviews.created_at DESC;`
-    )
-    .then(({ rows: reviews }) => {
-      return { reviews };
-    });
+
+exports.selectReviews = (category, sort_by, order) => {
+  let sql = `SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, COUNT(comments.review_id) 
+  AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id`;
+
+  if (category !== undefined) {
+    sql += format(` WHERE reviews.category = %L`, category);
+  }
+
+  sql += format(` GROUP BY reviews.review_id ORDER BY reviews.%I `, sort_by);
+
+  if (order.toUpperCase() === "ASC") {
+    sql += order.toUpperCase();
+  } else {
+    sql += "DESC";
+  }
+
+  sql += ";";
+
+  return db.query(sql).then(({ rows: reviews }) => {
+    return { reviews };
+  });
+
+
 };
 
 exports.selectReviewsById = (review_id) => {

@@ -8,10 +8,39 @@ const {
   getVotesByReviewId,
 } = require("../models/reviews.models.games");
 
-exports.getReviews = (req, res) => {
-  selectReviews().then((reviews) => {
-    res.status(200).send(reviews);
-  });
+const { checkIfCategoryExists } = require("../models/categories.models.games");
+
+exports.getReviews = (req, res, next) => {
+  let { category, sort_by, order } = req.query;
+  const validSortBys = [
+    "title",
+    "designer",
+    "owner",
+    "review_img_url",
+    "review_body",
+    "category",
+    "created_at",
+    "votes",
+  ];
+  const validOrders = ["DESC", "ASC"];
+  if (order !== undefined) order = order.toUpperCase();
+  if (order === undefined) order = "DESC";
+  if (sort_by === undefined) sort_by = "created_at";
+
+  if (!validOrders.includes(order) || !validSortBys.includes(sort_by)) {
+    res.status(400).send({ msg: "Bad request" });
+  } else {
+    checkIfCategoryExists(category)
+      .then(() => {
+        return selectReviews(category, sort_by, order);
+      })
+      .then((reviews) => {
+        res.status(200).send(reviews);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
 };
 
 exports.getReviewsById = (req, res, next) => {
