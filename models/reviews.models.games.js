@@ -2,19 +2,24 @@ const db = require("../db/connection.js");
 const format = require("pg-format");
 
 exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
-  let sql = `SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, COUNT(comments.review_id) AS comment_count
-FROM reviews 
-LEFT JOIN comments ON comments.review_id = reviews.review_id`;
+  let sql = `SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, COUNT(comments.review_id) 
+  AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id`;
 
   if (category !== undefined) {
     sql += format(` WHERE reviews.category = %L`, category);
   }
 
-  sql += format(` GROUP BY reviews.review_id ORDER BY reviews.%I`, sort_by);
+  sql += format(` GROUP BY reviews.review_id ORDER BY reviews.%I `, sort_by);
 
-  console.log(sql, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< sql in model");
+  if (order.toUpperCase() === "ASC") {
+    sql += order.toUpperCase();
+  } else {
+    sql += "DESC";
+  }
 
-  return db.query(`$1 $2;`, [sql, order]).then(({ rows: reviews }) => {
+  sql += ";";
+
+  return db.query(sql).then(({ rows: reviews }) => {
     return { reviews };
   });
 };

@@ -75,7 +75,7 @@ describe("GET api/reviews", () => {
         });
       });
   });
-  test.only("200: accepts category query and returns only reviews with a matching category", () => {
+  test("200: accepts category query and returns only reviews with a matching category", () => {
     return request(app)
       .get("/api/reviews?category=dexterity")
       .expect(200)
@@ -83,12 +83,22 @@ describe("GET api/reviews", () => {
         expect(reviews).toHaveLength(1);
       });
   });
-  test("200: accepts category query and returns only reviews with a matching category", () => {
+  test("200: accepts sort_by and order queries and returns ordered results", () => {
     return request(app)
       .get("/api/reviews?sort_by=category&order=asc")
       .expect(200)
       .then(({ body: { reviews } }) => {
-        expect(reviews).toHaveLength(1);
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy("category");
+      });
+  });
+  test("200: accepts category query and returns only reviews with a matching category, sorted by defined field (default DESC)", () => {
+    return request(app)
+      .get("/api/reviews?category=social deduction&sort_by=title")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(11);
+        expect(reviews).toBeSortedBy("title", { descending: true });
       });
   });
 });
@@ -317,7 +327,7 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
 });
 
-describe.only("GET /api/users", () => {
+describe("GET /api/users", () => {
   test("200 should receive an object with the key of users and an array of user objects", () => {
     return request(app)
       .get("/api/users")
