@@ -139,7 +139,7 @@ describe("GET api/reviews", () => {
 });
 
 describe("GET api/reviews/:review_id", () => {
-  test("200: should return an object with the key of review and a review object as a value", () => {
+  test("200: should return an object with the key of review and a review object as a value including a comment count", () => {
     return request(app)
       .get("/api/reviews/3")
       .expect(200)
@@ -155,6 +155,7 @@ describe("GET api/reviews/:review_id", () => {
             "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
           created_at: "2021-01-18T10:01:41.251Z",
           votes: 5,
+          comment_count: "3",
         });
       });
   });

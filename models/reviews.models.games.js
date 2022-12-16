@@ -25,14 +25,19 @@ exports.selectReviews = (category, sort_by, order) => {
 };
 
 exports.selectReviewsById = (review_id) => {
-  return db
-    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
-    .then(({ rows: review }) => {
-      if (!{ review: review }.review[0]) {
-        return Promise.reject({ msg: "Not found" });
-      }
-      return { review: review[0] };
-    });
+  let sql = format(
+    `SELECT reviews.designer, reviews.review_body, reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, COUNT(comments.review_id) 
+  AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id
+  WHERE reviews.review_id = %L`,
+    review_id
+  );
+  sql += ` GROUP BY reviews.review_id;`;
+  return db.query(sql).then(({ rows: review }) => {
+    if (!{ review: review }.review[0]) {
+      return Promise.reject({ msg: "Not found" });
+    }
+    return { review: review[0] };
+  });
 };
 
 exports.selectCommentsByReviewId = (review_id) => {
