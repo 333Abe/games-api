@@ -382,3 +382,25 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204 comment is deleted", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("400 comment_id provided was invalid", () => {
+    return request(app)
+      .delete("/api/comments/invalid")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("404 comment_id is valid format but no comment found with that comment_id", () => {
+    return request(app)
+      .delete("/api/comments/999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+});
